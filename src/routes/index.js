@@ -14,8 +14,8 @@ router.get("/create", (req, res) => {
   res.render("create", { model: {} });
 });
 router.post("/create", (req, res) => {
-  const sql = "INSERT INTO Blog (Title) VALUES (?)";
-  const blog = [req.body.Title];
+  const sql = "INSERT INTO Blog (Title, Content) VALUES (?, ?)";
+  const blog = [req.body.Title, req.body.Content];
 
   db.run(sql, blog, (err) => {
     if (err) return console.error(err.message);
