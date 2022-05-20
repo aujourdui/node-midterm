@@ -16,6 +16,7 @@
       <% for(const blog of model){ %>
       <tr>
         <td><%= blog.Title %></td>
+        <td><%= blog.Content %></td>
         <td>
           <a href="/edit?id=<%= blog.ID %>" class="btn btn-sm btn-warning"
             >Edit</a
