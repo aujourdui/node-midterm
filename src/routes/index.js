@@ -32,12 +32,18 @@ router.get("/edit", (req, res) => {
   });
 });
 router.post("/edit", (req, res) => {
-  const sql = "update Blog set Title = ? where id = ?";
-  const blog = [req.body.Title];
+  const sql = `
+  update Blog
+  set Title = ?,
+  Content = ?
+  where id = ?`;
+  // const blog = [req.body.Title, req.body.Content];
+  const title = [req.body.Title];
+  const content = [req.body.Content];
   const id = req.body.id;
   console.log(id);
 
-  db.run(sql, [blog, id]);
+  db.run(sql, [title, content, id]);
   res.redirect("/");
 });
 router.get("/delete", (req, res) => {
