@@ -1,6 +1,6 @@
 <%- include("_header") %>
 
-<h1>Todos (<%= model.length %>)</h1>
+<h1>Blog (<%= model.length %>)</h1>
 
 <div class="table-responsive-sm">
   <table class="table table-hover">
@@ -13,16 +13,21 @@
       </tr>
     </thead>
     <tbody>
-      <% for(const todo of model){ %>
+      <% for(const blog of model){ %>
       <tr>
-        <td><%= todo.Title %></td>
+        <td><%= blog.Title %></td>
+        <td><%= blog.Content %></td>
         <td>
-          <a href="/edit?id=<%= todo.ID %>" class="btn btn-sm btn-warning"
-            >Edit</a
-          >
-          <a href="/delete?id=<%= todo.ID %>" class="btn btn-sm btn-danger"
+          <a href="/edit/<%= blog.ID %>" class="btn btn-sm btn-warning">Edit</a>
+          <a href="/delete/<%= blog.ID %>" class="btn btn-sm btn-danger"
             >Delete</a
           >
+          <!-- <a href="/edit?id=<%= blog.ID %>" class="btn btn-sm btn-warning"
+            >Edit</a
+          >
+          <a href="/delete?id=<%= blog.ID %>" class="btn btn-sm btn-danger"
+            >Delete</a
+          > -->
         </td>
       </tr>
       <% } %>
