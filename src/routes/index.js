@@ -23,8 +23,8 @@ router.post("/create", (req, res) => {
     res.redirect("/");
   });
 });
-router.get("/edit", (req, res) => {
-  const id = req.query.id;
+router.get("/edit/:id", (req, res) => {
+  const id = req.params.id;
   const sql = "select * from Blog where id = ?";
   db.get(sql, [id], (err, row) => {
     if (err) return console.error(err.message);
@@ -40,14 +40,14 @@ router.post("/edit", (req, res) => {
   // const blog = [req.body.Title, req.body.Content];
   const title = [req.body.Title];
   const content = [req.body.Content];
-  const id = req.body.id;
+  const id = [req.body.id];
   console.log(id);
 
   db.run(sql, [title, content, id]);
   res.redirect("/");
 });
-router.get("/delete", (req, res) => {
-  const id = req.query.id;
+router.get("/delete/:id", (req, res) => {
+  const id = req.params.id;
   const sql = "select * from Blog where id = ?";
   db.get(sql, [id], (err, row) => {
     if (err) return console.error(err.message);

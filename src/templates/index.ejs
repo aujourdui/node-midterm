@@ -18,12 +18,16 @@
         <td><%= blog.Title %></td>
         <td><%= blog.Content %></td>
         <td>
-          <a href="/edit?id=<%= blog.ID %>" class="btn btn-sm btn-warning"
+          <a href="/edit/<%= blog.ID %>" class="btn btn-sm btn-warning">Edit</a>
+          <a href="/delete/<%= blog.ID %>" class="btn btn-sm btn-danger"
+            >Delete</a
+          >
+          <!-- <a href="/edit?id=<%= blog.ID %>" class="btn btn-sm btn-warning"
             >Edit</a
           >
           <a href="/delete?id=<%= blog.ID %>" class="btn btn-sm btn-danger"
             >Delete</a
-          >
+          > -->
         </td>
       </tr>
       <% } %>
