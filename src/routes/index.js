@@ -1,7 +1,27 @@
 const router = require("express").Router();
 const db = require("../services/dbsqlite");
+const bcrypt = require("bcrypt");
 
 router.get("/", (req, res) => {
+  res.status(200).json({ msg: "test" });
+});
+
+router.get("/api/login", (req, res) => {
+  let sess = req.session;
+  console.log(sess);
+
+  if (sess.email) {
+    return res.redirect("/api/home");
+  }
+  res.render("login");
+});
+
+router.post("/api/login", (req, res) => {
+  req.session.email = req.body.email;
+  res.end("logged in");
+});
+
+router.get("/home", (req, res) => {
   const sql = "SELECT * FROM Blog ORDER BY Title";
   db.all(sql, [], (err, rows) => {
     if (err) return console.error(err.message);
