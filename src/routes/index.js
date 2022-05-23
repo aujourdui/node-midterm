@@ -29,9 +29,11 @@ router.get("/api/register", (req, res) => {
   res.render("register");
 });
 
-router.post("/api/register", (req, res) => {
+router.post("/api/register", async (req, res) => {
   const { email, password } = req.body;
-  const sql = `INSERT INTO Users (Email, Password) VALUES ("${email}","${password}")`;
+  let hashedPassword = await bcrypt.hash(password, 10);
+
+  const sql = `INSERT INTO Users (Email, Password) VALUES ("${email}","${hashedPassword}")`;
   db.run(sql, [], (err, row) => {
     if (err) return console.error(err.message);
     console.log(row);
@@ -87,7 +89,6 @@ router.post("/edit", (req, res) => {
   set Title = ?,
   Content = ?
   where id = ?`;
-  // const blog = [req.body.Title, req.body.Content];
   const title = [req.body.Title];
   const content = [req.body.Content];
   const id = [req.body.id];
