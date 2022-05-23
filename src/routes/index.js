@@ -6,6 +6,15 @@ router.get("/", (req, res) => {
   res.status(200).json({ msg: "test" });
 });
 
+router.get("/api/logout", (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      return console.error(err);
+    }
+    res.redirect("/api/login");
+  });
+});
+
 router.get("/api/login", (req, res) => {
   let sess = req.session;
   console.log(sess);
@@ -17,23 +26,44 @@ router.get("/api/login", (req, res) => {
 });
 
 router.post("/api/login", (req, res) => {
-  req.session.email = req.body.email;
-  res.end("logged in");
+  const { email, password } = req.body;
+  const sql = `SELECT * FROM Users where email="${email}"`;
+
+  db.get(sql, [], (err, row) => {
+    // db.get(sql, [], async (err, row) => {
+    // const compared = await bcrypt.compare(password, row.password);
+
+    if (err) return console.error(err.message);
+
+    // if (compared) {
+    //   req.session.email = email;
+    //   res.end("logged in");
+    // } else {
+    //   res.end("Invalid credentials");
+    // }
+    if (row) {
+      req.session.email = email;
+      res.end("logged in");
+    } else {
+      res.end("Invalid credentials");
+    }
+  });
 });
 
 router.get("/api/register", (req, res) => {
   let sess = req.session;
   if (sess.email) {
-    return res.redirect("/api/admin");
+    return res.redirect("/api/home");
   }
   res.render("register");
 });
 
 router.post("/api/register", async (req, res) => {
   const { email, password } = req.body;
-  let hashedPassword = await bcrypt.hash(password, 10);
+  // let hashedPassword = await bcrypt.hash(password, 10);
+  // const sql = `INSERT INTO Users (Email, Password) VALUES ("${email}","${hashedPassword}")`;
+  const sql = `INSERT INTO Users (Email, Password) VALUES ("${email}","${password}")`;
 
-  const sql = `INSERT INTO Users (Email, Password) VALUES ("${email}","${hashedPassword}")`;
   db.run(sql, [], (err, row) => {
     if (err) return console.error(err.message);
     console.log(row);
@@ -53,13 +83,25 @@ router.post("/api/register", async (req, res) => {
 //     .catch((err) => console.error(err));
 // });
 
-router.get("/home", (req, res) => {
+router.get("/api/home", (req, res) => {
   const sql = "SELECT * FROM Blog ORDER BY Title";
-  db.all(sql, [], (err, rows) => {
-    if (err) return console.error(err.message);
+  const { email } = req.session;
 
-    res.render("index", { model: rows });
-  });
+  if (email) {
+    db.all(sql, [], (err, rows) => {
+      if (err) return console.error(err.message);
+
+      res.render("index", { model: rows });
+    });
+  } else {
+    res.end("Login first");
+  }
+  // if (email) {
+  //   res.write(`<h1>Hello ${email}</h1>`);
+  //   res.end();
+  // } else {
+  //   res.end("Login first");
+  // }
 });
 
 router.get("/create", (req, res) => {
