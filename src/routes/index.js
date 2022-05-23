@@ -21,6 +21,36 @@ router.post("/api/login", (req, res) => {
   res.end("logged in");
 });
 
+router.get("/api/register", (req, res) => {
+  let sess = req.session;
+  if (sess.email) {
+    return res.redirect("/api/admin");
+  }
+  res.render("register");
+});
+
+router.post("/api/register", (req, res) => {
+  const { email, password } = req.body;
+  const sql = `INSERT INTO Users (Email, Password) VALUES ("${email}","${password}")`;
+  db.run(sql, [], (err, row) => {
+    if (err) return console.error(err.message);
+    console.log(row);
+    res.end("Registered");
+  });
+});
+// router.post("/register", (req, res) => {
+//   const { email, password } = req.body;
+
+//   const user = new User(email, password);
+//   user
+//     .save()
+//     .then((result) => {
+//       console.log(result);
+//       res.end("Registered");
+//     })
+//     .catch((err) => console.error(err));
+// });
+
 router.get("/home", (req, res) => {
   const sql = "SELECT * FROM Blog ORDER BY Title";
   db.all(sql, [], (err, rows) => {
