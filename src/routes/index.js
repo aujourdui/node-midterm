@@ -29,24 +29,26 @@ router.post("/api/login", (req, res) => {
   const { email, password } = req.body;
   const sql = `SELECT * FROM Users where Email="${email}"`;
 
-  // db.get(sql, [], (err, row) => {
-  db.get(sql, [], async (err, row) => {
-    const compared = await bcrypt.compare(password, row.password);
+  db.get(sql, [], (err, row) => {
+    // db.get(sql, [], async (err, row) => {
+    // const compared = await bcrypt.compare(password, row.password);
 
     if (err) return console.error(err.message);
 
-    if (compared) {
-      req.session.email = email;
-      res.end("logged in");
-    } else {
-      res.end("Invalid credentials");
-    }
-    // if (row) {
+    // if (compared) {
     //   req.session.email = email;
     //   res.end("logged in");
     // } else {
     //   res.end("Invalid credentials");
     // }
+    if (row) {
+      req.session.email = email;
+      res.redirect("/api/home");
+      res.end();
+      // res.end("logged in");
+    } else {
+      res.end("Invalid credentials");
+    }
   });
 });
 
@@ -60,13 +62,18 @@ router.get("/api/register", (req, res) => {
 
 router.post("/api/register", async (req, res) => {
   const { email, password } = req.body;
-  let hashedPassword = await bcrypt.hash(password, 10);
-  const sql = `INSERT INTO Users (Email, Password) VALUES ("${email}","${hashedPassword}")`;
-  // const sql = `INSERT INTO Users (Email, Password) VALUES ("${email}","${password}")`;
+  // let hashedPassword = await bcrypt.hash(password, 10);
+  // const sql = `INSERT INTO Users (Email, Password) VALUES ("${email}","${hashedPassword}")`;
+  const sql = `INSERT INTO Users (Email, Password) VALUES ("${email}","${password}")`;
 
   db.run(sql, [], (err) => {
     if (err) return console.error(err.message);
-    res.end("Registered");
+    // res.redirect("/api/home");
+    res.write(`
+    <h1>You are successfully registered ${email}</h1>
+    Please login <a href="/api/login">here</a>.`);
+    res.end();
+    // res.end("Registered");
   });
 });
 
