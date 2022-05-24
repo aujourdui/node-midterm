@@ -27,26 +27,26 @@ router.get("/api/login", (req, res) => {
 
 router.post("/api/login", (req, res) => {
   const { email, password } = req.body;
-  const sql = `SELECT * FROM Users where email="${email}"`;
+  const sql = `SELECT * FROM Users where Email="${email}"`;
 
-  db.get(sql, [], (err, row) => {
-    // db.get(sql, [], async (err, row) => {
-    // const compared = await bcrypt.compare(password, row.password);
+  // db.get(sql, [], (err, row) => {
+  db.get(sql, [], async (err, row) => {
+    const compared = await bcrypt.compare(password, row.password);
 
     if (err) return console.error(err.message);
 
-    // if (compared) {
-    //   req.session.email = email;
-    //   res.end("logged in");
-    // } else {
-    //   res.end("Invalid credentials");
-    // }
-    if (row) {
+    if (compared) {
       req.session.email = email;
       res.end("logged in");
     } else {
       res.end("Invalid credentials");
     }
+    // if (row) {
+    //   req.session.email = email;
+    //   res.end("logged in");
+    // } else {
+    //   res.end("Invalid credentials");
+    // }
   });
 });
 
@@ -60,28 +60,15 @@ router.get("/api/register", (req, res) => {
 
 router.post("/api/register", async (req, res) => {
   const { email, password } = req.body;
-  // let hashedPassword = await bcrypt.hash(password, 10);
-  // const sql = `INSERT INTO Users (Email, Password) VALUES ("${email}","${hashedPassword}")`;
-  const sql = `INSERT INTO Users (Email, Password) VALUES ("${email}","${password}")`;
+  let hashedPassword = await bcrypt.hash(password, 10);
+  const sql = `INSERT INTO Users (Email, Password) VALUES ("${email}","${hashedPassword}")`;
+  // const sql = `INSERT INTO Users (Email, Password) VALUES ("${email}","${password}")`;
 
-  db.run(sql, [], (err, row) => {
+  db.run(sql, [], (err) => {
     if (err) return console.error(err.message);
-    console.log(row);
     res.end("Registered");
   });
 });
-// router.post("/register", (req, res) => {
-//   const { email, password } = req.body;
-
-//   const user = new User(email, password);
-//   user
-//     .save()
-//     .then((result) => {
-//       console.log(result);
-//       res.end("Registered");
-//     })
-//     .catch((err) => console.error(err));
-// });
 
 router.get("/api/home", (req, res) => {
   const sql = "SELECT * FROM Blog ORDER BY Title";
@@ -96,12 +83,6 @@ router.get("/api/home", (req, res) => {
   } else {
     res.end("Login first");
   }
-  // if (email) {
-  //   res.write(`<h1>Hello ${email}</h1>`);
-  //   res.end();
-  // } else {
-  //   res.end("Login first");
-  // }
 });
 
 router.get("/create", (req, res) => {

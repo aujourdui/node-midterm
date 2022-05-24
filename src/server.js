@@ -17,6 +17,7 @@ app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "templates"));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(session(ses_opt));
+app.use(express.json());
 
 app.use("/", require("./routes"));
 
