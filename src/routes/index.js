@@ -17,7 +17,6 @@ router.get("/api/logout", (req, res) => {
 
 router.get("/api/login", (req, res) => {
   let sess = req.session;
-  console.log(sess);
 
   if (sess.email) {
     return res.redirect("/api/home");
@@ -56,13 +55,25 @@ router.post("/api/register", async (req, res) => {
   const { email, password } = req.body;
   let hashedPassword = await bcrypt.hash(password, 10);
   const sql = `INSERT INTO Users (Email, Password) VALUES ("${email}","${hashedPassword}")`;
+  const sqlCompare = `SELECT Email from Users`;
 
-  db.run(sql, [], (err) => {
+  db.get(sqlCompare, [], (err, row) => {
     if (err) return console.error(err.message);
-    res.write(`
-    <h1>You are successfully registered ${email}</h1>
-    Please login <a href="/api/login">here</a>.`);
-    res.end();
+
+    if (row !== undefined && email === row.Email) {
+      res.write(`
+        <h1>Duplicate User, please change your email</h1>
+        Please register again <a href="/api/register">here</a>.`);
+      res.end();
+    } else {
+      db.run(sql, [], (err) => {
+        if (err) return console.error(err.message);
+        res.write(`
+        <h1>You are successfully registered ${email}</h1>
+        Please login <a href="/api/login">here</a>.`);
+        res.end();
+      });
+    }
   });
 });
 
