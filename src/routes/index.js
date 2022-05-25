@@ -1,13 +1,84 @@
 const router = require("express").Router();
 const db = require("../services/dbsqlite");
+const bcrypt = require("bcrypt");
 
 router.get("/", (req, res) => {
-  const sql = "SELECT * FROM Blog ORDER BY Title";
-  db.all(sql, [], (err, rows) => {
+  res.status(200).json({ msg: "test" });
+});
+
+router.get("/api/logout", (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      return console.error(err);
+    }
+    res.redirect("/api/login");
+  });
+});
+
+router.get("/api/login", (req, res) => {
+  let sess = req.session;
+  console.log(sess);
+
+  if (sess.email) {
+    return res.redirect("/api/home");
+  }
+  res.render("login");
+});
+
+router.post("/api/login", (req, res) => {
+  const { email, password } = req.body;
+  const sql = `SELECT * FROM Users where Email="${email}"`;
+
+  db.get(sql, [], async (err, row) => {
+    const compared = await bcrypt.compare(password, row.Password);
+
     if (err) return console.error(err.message);
 
-    res.render("index", { model: rows });
+    if (compared) {
+      req.session.email = email;
+      res.redirect("/api/home");
+      res.end();
+    } else {
+      res.end("Invalid credentials");
+    }
   });
+});
+
+router.get("/api/register", (req, res) => {
+  let sess = req.session;
+  if (sess.email) {
+    return res.redirect("/api/home");
+  }
+  res.render("register");
+});
+
+router.post("/api/register", async (req, res) => {
+  const { email, password } = req.body;
+  let hashedPassword = await bcrypt.hash(password, 10);
+  const sql = `INSERT INTO Users (Email, Password) VALUES ("${email}","${hashedPassword}")`;
+
+  db.run(sql, [], (err) => {
+    if (err) return console.error(err.message);
+    res.write(`
+    <h1>You are successfully registered ${email}</h1>
+    Please login <a href="/api/login">here</a>.`);
+    res.end();
+  });
+});
+
+router.get("/api/home", (req, res) => {
+  const sql = "SELECT * FROM Blog ORDER BY Title";
+  const { email } = req.session;
+
+  if (email) {
+    db.all(sql, [], (err, rows) => {
+      if (err) return console.error(err.message);
+
+      res.render("index", { model: rows });
+    });
+  } else {
+    res.end("Login first");
+  }
 });
 
 router.get("/create", (req, res) => {
@@ -37,7 +108,6 @@ router.post("/edit", (req, res) => {
   set Title = ?,
   Content = ?
   where id = ?`;
-  // const blog = [req.body.Title, req.body.Content];
   const title = [req.body.Title];
   const content = [req.body.Content];
   const id = [req.body.id];

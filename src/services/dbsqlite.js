@@ -13,6 +13,12 @@ const sql_create = `CREATE TABLE IF NOT EXISTS Blog (
     Content VARCHAR(255) NOT NULL
 );`;
 
+const sql_create_user = `CREATE TABLE IF NOT EXISTS Users (
+  ID INTEGER PRIMARY KEY AUTOINCREMENT,
+  Email VARCHAR(100) NOT NULL, 
+  Password VARCHAR(255) NOT NULL
+);`;
+
 db.run(sql_create, (err) => {
   if (err) return console.error(err.message);
 
@@ -25,6 +31,10 @@ db.run(sql_create, (err) => {
 
     console.log("Successfully created Blog table");
   });
+});
+
+db.run(sql_create_user, (err) => {
+  if (err) return console.error(err.message);
 });
 
 module.exports = db;

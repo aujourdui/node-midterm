@@ -1,0 +1,24 @@
+<%- include("_header") -%>
+
+<h1>Login</h1>
+<form action="/api/login" method="post">
+  <input
+    type="email"
+    class="form-control"
+    placeholder="Type your Email"
+    name="email"
+  />
+  <input
+    type="password"
+    class="form-control"
+    placeholder="Type your Password"
+    name="password"
+  />
+  <input type="submit" value="Login" class="btn btn-success" />
+</form>
+<h5 style="margin-top: 1rem">
+  If you don't have your account, please register
+  <a href="/api/register">here</a>.
+</h5>
+
+<%- include("_footer") -%>
