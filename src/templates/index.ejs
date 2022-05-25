@@ -7,8 +7,11 @@
     <thead>
       <tr>
         <th>Title</th>
+        <th>Contents</th>
         <th>
-          <a href="/create" class="btn btn-sm btn-success">Create</a>
+          <a href="/create" class="btn btn-sm btn-success"
+            >Write a new article</a
+          >
         </th>
       </tr>
     </thead>
@@ -16,7 +19,7 @@
       <% for(const blog of model){ %>
       <tr>
         <td><%= blog.Title %></td>
-        <td><%= blog.Content %></td>
+        <td><%= blog.Content.substring(0, 50) %>...</td>
         <td>
           <a href="/edit/<%= blog.ID %>" class="btn btn-sm btn-warning">Edit</a>
           <a href="/delete/<%= blog.ID %>" class="btn btn-sm btn-danger"

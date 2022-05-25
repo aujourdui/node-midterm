@@ -102,7 +102,7 @@ router.post("/create", (req, res) => {
   db.run(sql, blog, (err) => {
     if (err) return console.error(err.message);
 
-    res.redirect("/");
+    res.redirect("/api/home");
   });
 });
 router.get("/edit/:id", (req, res) => {
@@ -125,7 +125,7 @@ router.post("/edit", (req, res) => {
   console.log(id);
 
   db.run(sql, [title, content, id]);
-  res.redirect("/");
+  res.redirect("/api/home");
 });
 router.get("/delete/:id", (req, res) => {
   const id = req.params.id;
@@ -139,7 +139,7 @@ router.post("/delete", (req, res) => {
   const id = req.body.id;
   const sql = "delete from Blog where id = ?";
   db.run(sql, id);
-  res.redirect("/");
+  res.redirect("/api/home");
 });
 
 module.exports = router;
