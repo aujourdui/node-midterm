@@ -92,6 +92,15 @@ router.get("/api/home", (req, res) => {
   }
 });
 
+router.get("/api/home/:id", (req, res) => {
+  const id = req.params.id;
+  const sql = "select * from Blog where id = ?";
+  db.get(sql, [id], (err, row) => {
+    if (err) return console.error(err.message);
+    res.render("detail", { model: row });
+  });
+});
+
 router.get("/create", (req, res) => {
   res.render("create", { model: {} });
 });
