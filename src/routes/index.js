@@ -17,7 +17,6 @@ router.get("/api/logout", (req, res) => {
 
 router.get("/api/login", (req, res) => {
   let sess = req.session;
-  console.log(sess);
 
   if (sess.email) {
     return res.redirect("/api/home");
@@ -60,20 +59,12 @@ router.post("/api/register", async (req, res) => {
 
   db.get(sqlCompare, [], (err, row) => {
     if (err) return console.error(err.message);
-    // console.log(email);
-    // console.log(row.Email);
 
-    // res.end();
     if (row !== undefined && email === row.Email) {
-      // if (email === row.Email) {
       res.write(`
         <h1>Duplicate User, please change your email</h1>
         Please register again <a href="/api/register">here</a>.`);
-      // res.write(`
-      //   <h3>Duplicate User, please change your email<h3>
-      //   Please register again <a href="/api/register">here</a>`);
       res.end();
-      // }
     } else {
       db.run(sql, [], (err) => {
         if (err) return console.error(err.message);
