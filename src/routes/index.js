@@ -2,20 +2,16 @@ const router = require("express").Router();
 const db = require("../services/dbsqlite");
 const bcrypt = require("bcrypt");
 
-router.get("/", (req, res) => {
-  res.status(200).json({ msg: "test" });
-});
-
 router.get("/api/logout", (req, res) => {
   req.session.destroy((err) => {
     if (err) {
       return console.error(err);
     }
-    res.redirect("/api/login");
+    res.redirect("/");
   });
 });
 
-router.get("/api/login", (req, res) => {
+router.get("/", (req, res) => {
   let sess = req.session;
 
   if (sess.email) {
@@ -24,7 +20,7 @@ router.get("/api/login", (req, res) => {
   res.render("login");
 });
 
-router.post("/api/login", (req, res) => {
+router.post("/", (req, res) => {
   const { email, password } = req.body;
   const sql = `SELECT * FROM Users where Email="${email}"`;
 
@@ -70,7 +66,7 @@ router.post("/api/register", async (req, res) => {
         if (err) return console.error(err.message);
         res.write(`
         <h1>You are successfully registered ${email}</h1>
-        Please login <a href="/api/login">here</a>.`);
+        Please login <a href="/">here</a>.`);
         res.end();
       });
     }
