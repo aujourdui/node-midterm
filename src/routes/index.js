@@ -101,7 +101,11 @@ router.get("/api/home/:id", (req, res) => {
 });
 router.post("/api/home/comment", (req, res) => {
   const sqlComment = `update Blog set Comment=? where id = ?`;
+  // const commentList = [];
   const comment = [req.body.Comment];
+  // console.log(comment);
+  // commentList.push(comment);
+  // console.log(commentList);
   const id = [req.body.id];
 
   db.run(sqlComment, [comment, id]);
