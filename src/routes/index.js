@@ -101,11 +101,14 @@ router.get("/api/home/:id", (req, res) => {
 });
 
 router.post("/api/home", (req, res) => {
-  const sql = `update Blog set Comment=? where id = ?`;
+  const sqlComment = `update Blog set Comment=? where id = ?`;
+  const sqlLike = `update Blog set Like=? where id = ?`;
   const comment = [req.body.Comment];
+  const like = [req.body.Like];
   const id = [req.body.id];
 
-  db.run(sql, [comment, id]);
+  db.run(sqlComment, [comment, id]);
+  db.run(sqlLike, [like, id]);
   res.redirect(`home/${id}`);
 });
 

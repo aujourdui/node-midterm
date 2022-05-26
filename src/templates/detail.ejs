@@ -30,14 +30,23 @@
         class="btn btn-default btn-secondary mt-2"
       />
     </form>
-    <div class="d-flex justify-content-end">
-      <p class="mt-4">Like <%= model.Like %></p>
-      <input
-        type="submit"
-        value="Like"
-        class="btn btn-default btn-info ml-2 mt-2 p-3"
-      />
-    </div>
+    <form action="/api/home" method="post">
+      <div class="d-flex justify-content-end">
+        <p class="mt-4">Like <%= model.Like++ %></p>
+        <input
+          type="hidden"
+          name="Like"
+          class="form-control"
+          value="<%= model.Like %>"
+        />
+        <input type="hidden" name="id" value="<%= model.ID %>" />
+        <input
+          type="submit"
+          value="Like"
+          class="btn btn-default btn-info ml-2 mt-2 p-3"
+        />
+      </div>
+    </form>
     <div class="mt-2">
       <a href="/edit/<%= model.ID %>" class="btn btn-sm btn-warning">Edit</a>
       <a href="/delete/<%= model.ID %>" class="btn btn-sm btn-danger">Delete</a>
