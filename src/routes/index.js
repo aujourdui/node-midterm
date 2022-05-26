@@ -84,7 +84,10 @@ router.get("/api/home", (req, res) => {
       res.render("index", { model: rows });
     });
   } else {
-    res.end("Login first");
+    res.write(`
+    <h1>Login first</h1>
+    Please login <a href="/">here</a>.`);
+    res.end();
   }
 });
 
@@ -97,19 +100,18 @@ router.get("/api/home/:id", (req, res) => {
   });
 });
 
-router.get("/create", (req, res) => {
-  res.render("create", { model: {} });
-});
-router.post("/create", (req, res) => {
-  const sql = "INSERT INTO Blog (Title, Content) VALUES (?, ?)";
-  const blog = [req.body.Title, req.body.Content];
+router.post("/api/home", (req, res) => {
+  const sqlComment = `update Blog set Comment=? where id = ?`;
+  const sqlLike = `update Blog set Like=? where id = ?`;
+  const comment = [req.body.Comment];
+  const like = [req.body.Like];
+  const id = [req.body.id];
 
-  db.run(sql, blog, (err) => {
-    if (err) return console.error(err.message);
-
-    res.redirect("/api/home");
-  });
+  db.run(sqlComment, [comment, id]);
+  db.run(sqlLike, [like, id]);
+  res.redirect(`home/${id}`);
 });
+
 router.get("/edit/:id", (req, res) => {
   const id = req.params.id;
   const sql = "select * from Blog where id = ?";
@@ -127,11 +129,25 @@ router.post("/edit", (req, res) => {
   const title = [req.body.Title];
   const content = [req.body.Content];
   const id = [req.body.id];
-  console.log(id);
 
   db.run(sql, [title, content, id]);
   res.redirect("/api/home");
 });
+
+router.get("/create", (req, res) => {
+  res.render("create", { model: {} });
+});
+router.post("/create", (req, res) => {
+  const sql = "INSERT INTO Blog (Title, Content) VALUES (?, ?)";
+  const blog = [req.body.Title, req.body.Content];
+
+  db.run(sql, blog, (err) => {
+    if (err) return console.error(err.message);
+
+    res.redirect("/api/home");
+  });
+});
+
 router.get("/delete/:id", (req, res) => {
   const id = req.params.id;
   const sql = "select * from Blog where id = ?";
