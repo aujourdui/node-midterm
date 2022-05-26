@@ -99,17 +99,20 @@ router.get("/api/home/:id", (req, res) => {
     res.render("detail", { model: row });
   });
 });
-
-router.post("/api/home", (req, res) => {
+router.post("/api/home/comment", (req, res) => {
   const sqlComment = `update Blog set Comment=? where id = ?`;
-  const sqlLike = `update Blog set Like=? where id = ?`;
   const comment = [req.body.Comment];
-  const like = [req.body.Like];
   const id = [req.body.id];
 
   db.run(sqlComment, [comment, id]);
+  res.redirect(`${id}`);
+});
+router.post("/api/home/like", (req, res) => {
+  const sqlLike = `update Blog set Like=? where id = ?`;
+  const like = [req.body.Like];
+  const id = [req.body.id];
   db.run(sqlLike, [like, id]);
-  res.redirect(`home/${id}`);
+  res.redirect(`${id}`);
 });
 
 router.get("/edit/:id", (req, res) => {
