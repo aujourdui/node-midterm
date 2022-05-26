@@ -16,7 +16,7 @@
       <li class="list-unstyled"><%= model.Comment %></li>
     </ul>
     <p>Comment Form</p>
-    <form action="/api/home" method="post">
+    <form action="/api/home/comment" method="post">
       <textarea
         rows="4"
         cols="50"
@@ -30,7 +30,7 @@
         class="btn btn-default btn-secondary mt-2"
       />
     </form>
-    <form action="/api/home" method="post">
+    <form action="/api/home/like" method="post">
       <div class="d-flex justify-content-end">
         <p class="mt-4">Like <%= model.Like++ %></p>
         <input
