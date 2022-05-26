@@ -11,8 +11,37 @@
     <h5 class="mb-4"><%= model.Title %></h5>
     <h4>Content</h4>
     <p><%= model.Content %></p>
-    <a href="/edit/<%= model.ID %>" class="btn btn-sm btn-warning">Edit</a>
-    <a href="/delete/<%= model.ID %>" class="btn btn-sm btn-danger">Delete</a>
+    <p>Comment List</p>
+    <ul>
+      <li class="list-unstyled"><%= model.Comment %></li>
+    </ul>
+    <p>Comment Form</p>
+    <form action="/api/home" method="post">
+      <textarea
+        rows="4"
+        cols="50"
+        name="Comment"
+        class="form-control"
+      ></textarea>
+      <input type="hidden" name="id" value="<%= model.ID %>" />
+      <input
+        type="submit"
+        value="Add comment"
+        class="btn btn-default btn-secondary mt-2"
+      />
+    </form>
+    <div class="d-flex justify-content-end">
+      <p class="mt-4">Like <%= model.Like %></p>
+      <input
+        type="submit"
+        value="Like"
+        class="btn btn-default btn-info ml-2 mt-2 p-3"
+      />
+    </div>
+    <div class="mt-2">
+      <a href="/edit/<%= model.ID %>" class="btn btn-sm btn-warning">Edit</a>
+      <a href="/delete/<%= model.ID %>" class="btn btn-sm btn-danger">Delete</a>
+    </div>
   </div>
 </div>
 

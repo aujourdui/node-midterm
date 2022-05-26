@@ -9,8 +9,10 @@ const db = new sqlite3.Database(db_name, (err) => {
 
 const sql_create = `CREATE TABLE IF NOT EXISTS Blog (
     ID INTEGER PRIMARY KEY AUTOINCREMENT,
-    Title VARCHAR(100) NOT NULL, 
-    Content VARCHAR(255) NOT NULL
+    Title VARCHAR(100) NOT NULL,
+    Content VARCHAR(255) NOT NULL,
+    Comment VARCHAR(255),
+    Like INTEGER
 );`;
 
 const sql_create_user = `CREATE TABLE IF NOT EXISTS Users (
@@ -23,9 +25,9 @@ const sql_create_user = `CREATE TABLE IF NOT EXISTS Users (
 db.run(sql_create, (err) => {
   if (err) return console.error(err.message);
 
-  const sql_insert = `INSERT INTO Blog (ID, Title, Content) VALUES
-    (1, 'How to use ejs', 'Basically, ejs in one on the template engine in JS. We can embed and display HTML inside ejs(such as Laravel or Django)'),
-    (2, 'How to use sqlite', 'Sqlite is one of the relational database which is lightweight, easy to use. I will share my knowledge about sqlite in this article')`;
+  const sql_insert = `INSERT INTO Blog (ID, Title, Content, Comment, Like) VALUES
+    (1, 'How to use ejs', 'Basically, ejs in one on the template engine in JS. We can embed and display HTML inside ejs such as Laravel or Django', 'This article is great', 0),
+    (2, 'How to use sqlite', 'Sqlite is one of the relational database which is lightweight, easy to use. I will share my knowledge about sqlite in this article', 'This article is amazing', 0)`;
 
   db.run(sql_insert, (err) => {
     if (err) return console.error(err.message);
