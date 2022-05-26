@@ -104,10 +104,9 @@ router.post("/api/home", (req, res) => {
   const sql = `update Blog set Comment=? where id = ?`;
   const comment = [req.body.Comment];
   const id = [req.body.id];
-  console.log(id);
 
   db.run(sql, [comment, id]);
-  res.redirect("/api/home");
+  res.redirect(`home/${id}`);
 });
 
 router.get("/edit/:id", (req, res) => {
