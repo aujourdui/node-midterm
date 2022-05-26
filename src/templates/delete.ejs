@@ -1,10 +1,10 @@
 <%- include("_header") %>
 
-<h1>Delete a Blog</h1>
+<h1>Delete an article</h1>
 
 <form action="/delete" method="post">
   <div class="form-horizontal">
-    <h3>Please make sure to delete below todo</h3>
+    <h3>Please make sure to delete below article</h3>
     <h5>-<%= model.Title %>-</h5>
     <input type="hidden" name="id" value="<%= model.ID %>" />
 
@@ -15,7 +15,7 @@
           value="Delete"
           class="btn btn-default btn-danger"
         />
-        <a href="/" class="btn btn-outline-dark">Cancel</a>
+        <a href="/api/home" class="btn btn-outline-dark">Cancel</a>
       </div>
     </div>
   </div>

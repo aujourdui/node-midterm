@@ -1,14 +1,22 @@
 <%- include("_header") %>
 
-<h1>Blog (<%= model.length %>)</h1>
+<h1 class="d-inline-flex">
+  Blog
+  <h3 class="ml-3 d-inline-flex">
+    -The number of article(<%= model.length %>)-
+  </h3>
+</h1>
 
 <div class="table-responsive-sm">
   <table class="table table-hover">
     <thead>
       <tr>
         <th>Title</th>
+        <th>Contents</th>
         <th>
-          <a href="/create" class="btn btn-sm btn-success">Create</a>
+          <a href="/create" class="btn btn-sm btn-success"
+            >Write a new article</a
+          >
         </th>
       </tr>
     </thead>
@@ -16,18 +24,15 @@
       <% for(const blog of model){ %>
       <tr>
         <td><%= blog.Title %></td>
-        <td><%= blog.Content %></td>
+        <td><%= blog.Content.substring(0, 50) %>...</td>
         <td>
-          <a href="/edit/<%= blog.ID %>" class="btn btn-sm btn-warning">Edit</a>
+          <!-- <a href="/edit/<%= blog.ID %>" class="btn btn-sm btn-warning">Edit</a>
           <a href="/delete/<%= blog.ID %>" class="btn btn-sm btn-danger"
             >Delete</a
-          >
-          <!-- <a href="/edit?id=<%= blog.ID %>" class="btn btn-sm btn-warning"
-            >Edit</a
-          >
-          <a href="/delete?id=<%= blog.ID %>" class="btn btn-sm btn-danger"
-            >Delete</a
           > -->
+          <a href="home/<%= blog.ID %>" class="btn btn-sm btn-primary"
+            >Detail</a
+          >
         </td>
       </tr>
       <% } %>

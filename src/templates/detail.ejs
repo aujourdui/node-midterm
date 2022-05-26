@@ -1,0 +1,19 @@
+<%- include("_header") %>
+
+<h1 class="mb-4 mt-5">Blog Detail</h1>
+<a href="/api/home" class="btn btn-sm btn-success fixed-top right-4"
+  >Back to home</a
+>
+
+<div class="form-group row">
+  <div class="col-sm-8">
+    <h4>Title</h4>
+    <h5 class="mb-4"><%= model.Title %></h5>
+    <h4>Content</h4>
+    <p><%= model.Content %></p>
+    <a href="/edit/<%= model.ID %>" class="btn btn-sm btn-warning">Edit</a>
+    <a href="/delete/<%= model.ID %>" class="btn btn-sm btn-danger">Delete</a>
+  </div>
+</div>
+
+<%- include("_footer") %>
