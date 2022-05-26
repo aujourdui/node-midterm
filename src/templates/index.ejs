@@ -1,6 +1,11 @@
 <%- include("_header") %>
 
-<h1>Blog (<%= model.length %>)</h1>
+<h1 class="d-inline-flex">
+  Blog
+  <h3 class="ml-3 d-inline-flex">
+    -The number of article(<%= model.length %>)-
+  </h3>
+</h1>
 
 <div class="table-responsive-sm">
   <table class="table table-hover">
