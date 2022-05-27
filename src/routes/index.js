@@ -1,7 +1,6 @@
 const router = require("express").Router();
 const db = require("../services/dbsqlite");
 const bcrypt = require("bcrypt");
-
 router.get("/api/logout", (req, res) => {
   req.session.destroy((err) => {
     if (err) {
@@ -10,25 +9,22 @@ router.get("/api/logout", (req, res) => {
     res.redirect("/");
   });
 });
-
 router.get("/", (req, res) => {
   let sess = req.session;
-
   if (sess.email) {
     return res.redirect("/api/home");
   }
   res.render("login");
 });
-
 router.post("/", (req, res) => {
   const { email, password } = req.body;
   const sql = `SELECT * FROM Users where Email="${email}"`;
-
   db.get(sql, [], async (err, row) => {
+    if (!row) {
+      return res.end("User is not registered");
+    }
     const compared = await bcrypt.compare(password, row.Password);
-
     if (err) return console.error(err.message);
-
     if (compared) {
       req.session.email = email;
       res.redirect("/api/home");
@@ -38,7 +34,6 @@ router.post("/", (req, res) => {
     }
   });
 });
-
 router.get("/api/register", (req, res) => {
   let sess = req.session;
   if (sess.email) {
@@ -46,16 +41,13 @@ router.get("/api/register", (req, res) => {
   }
   res.render("register");
 });
-
 router.post("/api/register", async (req, res) => {
   const { email, password } = req.body;
   let hashedPassword = await bcrypt.hash(password, 10);
   const sql = `INSERT INTO Users (Email, Password) VALUES ("${email}","${hashedPassword}")`;
   const sqlCompare = `SELECT Email from Users`;
-
   db.get(sqlCompare, [], (err, row) => {
     if (err) return console.error(err.message);
-
     if (row !== undefined && email === row.Email) {
       res.write(`
         <h1>Duplicate User, please change your email</h1>
@@ -72,15 +64,12 @@ router.post("/api/register", async (req, res) => {
     }
   });
 });
-
 router.get("/api/home", (req, res) => {
   const sql = "SELECT * FROM Blog ORDER BY Title";
   const { email } = req.session;
-
   if (email) {
     db.all(sql, [], (err, rows) => {
       if (err) return console.error(err.message);
-
       res.render("index", { model: rows });
     });
   } else {
@@ -90,26 +79,28 @@ router.get("/api/home", (req, res) => {
     res.end();
   }
 });
-
 router.get("/api/home/:id", (req, res) => {
   const id = req.params.id;
   const sql = "select * from Blog where id = ?";
+
   db.get(sql, [id], (err, row) => {
-    if (err) return console.error(err.message);
-    res.render("detail", { model: row });
+    const commentsSql = "SELECT * FROM Comments WHERE Blog_ID = ?";
+    db.all(commentsSql, [id], (err, commentsRow) => {
+      row.Comments = commentsRow;
+      if (err) return console.error(err.message);
+      res.render("detail", { model: row });
+    });
   });
 });
 router.post("/api/home/comment", (req, res) => {
-  const sqlComment = `update Blog set Comment=? where id = ?`;
-  // const commentList = [];
   const comment = [req.body.Comment];
-  // console.log(comment);
-  // commentList.push(comment);
-  // console.log(commentList);
   const id = [req.body.id];
-
-  db.run(sqlComment, [comment, id]);
-  res.redirect(`${id}`);
+  const sql = "INSERT INTO Comments (Comment, Blog_ID) VALUES (?, ?)";
+  const body = [comment, id];
+  db.run(sql, body, (err) => {
+    if (err) return console.error(err.message);
+    res.redirect(`${id}`);
+  });
 });
 router.post("/api/home/like", (req, res) => {
   const sqlLike = `update Blog set Like=? where id = ?`;
@@ -118,7 +109,6 @@ router.post("/api/home/like", (req, res) => {
   db.run(sqlLike, [like, id]);
   res.redirect(`${id}`);
 });
-
 router.get("/edit/:id", (req, res) => {
   const id = req.params.id;
   const sql = "select * from Blog where id = ?";
@@ -136,25 +126,20 @@ router.post("/edit", (req, res) => {
   const title = [req.body.Title];
   const content = [req.body.Content];
   const id = [req.body.id];
-
   db.run(sql, [title, content, id]);
   res.redirect("/api/home");
 });
-
 router.get("/create", (req, res) => {
   res.render("create", { model: {} });
 });
 router.post("/create", (req, res) => {
   const sql = "INSERT INTO Blog (Title, Content) VALUES (?, ?)";
   const blog = [req.body.Title, req.body.Content];
-
   db.run(sql, blog, (err) => {
     if (err) return console.error(err.message);
-
     res.redirect("/api/home");
   });
 });
-
 router.get("/delete/:id", (req, res) => {
   const id = req.params.id;
   const sql = "select * from Blog where id = ?";
@@ -169,5 +154,4 @@ router.post("/delete", (req, res) => {
   db.run(sql, id);
   res.redirect("/api/home");
 });
-
 module.exports = router;
