@@ -23,15 +23,23 @@ router.post("/", (req, res) => {
     if (!row) {
       return res.end("User is not registered");
     }
-    const compared = await bcrypt.compare(password, row.Password);
     if (err) return console.error(err.message);
-    if (compared) {
+    if (row) {
       req.session.email = email;
       res.redirect("/api/home");
       res.end();
     } else {
       res.end("Invalid credentials");
     }
+    // const compared = await bcrypt.compare(password, row.Password);
+    // if (err) return console.error(err.message);
+    // if (compared) {
+    //   req.session.email = email;
+    //   res.redirect("/api/home");
+    //   res.end();
+    // } else {
+    //   res.end("Invalid credentials");
+    // }
   });
 });
 router.get("/api/register", (req, res) => {
@@ -44,7 +52,8 @@ router.get("/api/register", (req, res) => {
 router.post("/api/register", async (req, res) => {
   const { email, password } = req.body;
   let hashedPassword = await bcrypt.hash(password, 10);
-  const sql = `INSERT INTO Users (Email, Password) VALUES ("${email}","${hashedPassword}")`;
+  const sql = `INSERT INTO Users (Email, Password) VALUES ("${email}","${password}")`;
+  // const sql = `INSERT INTO Users (Email, Password) VALUES ("${email}","${hashedPassword}")`;
   const sqlCompare = `SELECT Email from Users`;
   db.get(sqlCompare, [], (err, row) => {
     if (err) return console.error(err.message);
