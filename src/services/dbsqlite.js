@@ -11,7 +11,6 @@ const sql_create = `CREATE TABLE IF NOT EXISTS Blog (
     ID INTEGER PRIMARY KEY AUTOINCREMENT,
     Title VARCHAR(100) NOT NULL,
     Content VARCHAR(255) NOT NULL,
-    Comment VARCHAR(255),
     Like INTEGER
 );`;
 
@@ -22,12 +21,19 @@ const sql_create_user = `CREATE TABLE IF NOT EXISTS Users (
   UNIQUE(Email)
 );`;
 
+const sql_create_comment = `CREATE TABLE IF NOT EXISTS Comments (
+  ID INTEGER PRIMARY KEY AUTOINCREMENT,
+  Blog_ID INTEGER NOT NULL,
+  Comment VARCHAR(255) NOT NULL,
+  FOREIGN KEY (Blog_ID) REFERENCES Blog (ID)
+);`;
+
 db.run(sql_create, (err) => {
   if (err) return console.error(err.message);
 
-  const sql_insert = `INSERT INTO Blog (ID, Title, Content, Comment, Like) VALUES
-    (1, 'How to use ejs', 'Basically, ejs in one on the template engine in JS. We can embed and display HTML inside ejs such as Laravel or Django', 'This article is great', 0),
-    (2, 'How to use sqlite', 'Sqlite is one of the relational database which is lightweight, easy to use. I will share my knowledge about sqlite in this article', 'This article is amazing', 0)`;
+  const sql_insert = `INSERT INTO Blog (ID, Title, Content, Like) VALUES
+    (1, 'How to use ejs', 'Basically, ejs in one on the template engine in JS. We can embed and display HTML inside ejs such as Laravel or Django', 0),
+    (2, 'How to use sqlite', 'Sqlite is one of the relational database which is lightweight, easy to use. I will share my knowledge about sqlite in this article', 0)`;
 
   db.run(sql_insert, (err) => {
     if (err) return console.error(err.message);
@@ -37,6 +43,10 @@ db.run(sql_create, (err) => {
 });
 
 db.run(sql_create_user, (err) => {
+  if (err) return console.error(err.message);
+});
+
+db.run(sql_create_comment, (err) => {
   if (err) return console.error(err.message);
 });
 
