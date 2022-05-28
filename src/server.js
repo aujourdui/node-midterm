@@ -1,3 +1,4 @@
+require("os").tmpdir();
 require("./services/dbsqlite");
 const express = require("express");
 const bodyParser = require("body-parser");
